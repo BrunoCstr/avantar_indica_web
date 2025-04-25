@@ -35,10 +35,13 @@ module.exports = {
         green: "#32CD32",
       },
       fontFamily: {
-        regular: "FamiljenGrotesk-Regular",
-        medium: "FamiljenGrotesk-Medium",
-        semiBold: "FamiljenGrotesk-SemiBold",
-        bold: "FamiljenGrotesk-Bold",
+        sans: ["FamiljenGrotesk-Regular", "sans-serif"],
+        familjen: [
+            "FamiljenGrotesk-Regular",
+            "FamiljenGrotesk-Medium",
+            "FamiljenGrotesk-SemiBold",
+            "FamiljenGrotesk-Bold",
+          ],
       },
     },
   },
