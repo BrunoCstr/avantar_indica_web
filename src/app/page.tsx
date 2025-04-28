@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -13,10 +13,14 @@ import {
 import Image from "next/image";
 import { ButtonAvtr } from "./../components/myComponents/ButtonAvtr";
 import { InputAvtr } from "@/components/myComponents/InputAvtr";
+import { BackButton } from "@/components/myComponents/BackButton";
+import { useAuth } from "@/context/Auth";
 
 function AuthPage() {
+  const { signIn, forgotPassword } = useAuth();
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [validationMessage, setValidationMessage] = useState('');
+  const [validationMessage, setValidationMessage] = useState("");
+  const [stayConnected, setStayConncted] = useState(false);
 
   const {
     register,
@@ -31,7 +35,32 @@ function AuthPage() {
     },
   });
 
-  console.log(isForgotPassword);
+  const {
+    register: registerForgotPassword,
+    handleSubmit: handleForgotPasswordSubmit,
+    formState: { errors: errorsForgotPassword },
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      emailForgot: "",
+    },
+  });
+
+  async function onSubmitSignIn(data: SignInFormData) {
+    const signInUser = await signIn(data.email, data.password, stayConnected);
+
+    if (signInUser) {
+      setValidationMessage(signInUser);
+    }
+  }
+
+  async function onSubmitForgetPass(data: ForgotPasswordFormData) {
+    const forgotPass = await forgotPassword(data.emailForgot);
+
+    if (forgotPass) {
+      setValidationMessage(forgotPass);
+    }
+  }
 
   return (
     <div
@@ -52,28 +81,62 @@ function AuthPage() {
               width={300}
               height={300}
             />
-            <div className="mb-3 mt-4 text-blue text-sm h-5">
-              <span>{validationMessage}</span>
-            </div>
             {isForgotPassword ? (
               <div>
-                <span>Vasco</span>
+                <div className="flex flex-row justify-between items-center gap-4 mt-2 mb-2">
+                  <div className="">
+                    <BackButton onClick={() => setIsForgotPassword(false)} />
+                  </div>
+                  <div className="mb-3 mt-4 text-blue text-sm h-5">
+                    <span>{validationMessage}</span>
+                  </div>
+                  <div>
+                    <span></span>
+                  </div>
+                </div>
+                <form
+                  onSubmit={handleForgotPasswordSubmit(onSubmitForgetPass)}
+                >
+                  <div className="flex flex-col gap-3">
+                    <InputAvtr
+                      type="email"
+                      placeholder="E-mail"
+                      errorMessage={errorsForgotPassword.emailForgot?.message}
+                      {...registerForgotPassword("emailForgot")}
+                    />
+                    <ButtonAvtr type="submit" text="ENVIAR" />
+                  </div>
+                </form>
               </div>
             ) : (
               <>
-                <form onSubmit={handleSubmit(() => console.log("enviado"))}>
+                <div className="mb-3 mt-4 text-blue text-sm h-5">
+                  <span>{validationMessage}</span>
+                </div>
+                <form onSubmit={handleSubmit(onSubmitSignIn)}>
                   <div className="flex flex-col gap-3">
-                    <InputAvtr type="email" placeholder="Login" />
-                    <InputAvtr type="password" placeholder="Senha" />
+                    <InputAvtr
+                      type="email"
+                      errorMessage={errors.email?.message}
+                      {...register("email")}
+                      placeholder="Login"
+                    />
+                    <InputAvtr
+                      type="password"
+                      errorMessage={errors.password?.message}
+                      {...register("password")}
+                      placeholder="Senha"
+                    />
                     <ButtonAvtr type="submit" text="ENTRAR" />
                   </div>
                 </form>
-                <div className="flex flex-row justify-between w-full mt-2">
+                <div className="flex flex-row justify-between w-75 mt-2">
                   <div className="flex items-center gap-1">
                     <input
                       type="checkbox"
                       className="cursor-pointer"
                       id="stayConnected"
+                      onChange={(e) => setStayConncted(e.target.checked)}
                     />
                     <label
                       className="font-regular text-xs text-white"
@@ -87,7 +150,6 @@ function AuthPage() {
                       onClick={() => setIsForgotPassword(true)}
                       className="font-regular text-xs text-white cursor-pointer"
                     >
-                      {/* Colocar botão para voltar pra tela de login */}
                       Esqueci minha senha
                     </span>
                   </div>

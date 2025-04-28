@@ -13,25 +13,35 @@ interface BtnProps {
   hover?: string;
 }
 
-export function ButtonAvtr({
-  type = "button",
-  text,
-  fontSize = "text-xl",
-  bgColor = "bg-blue",
-  textColor = "text-tertiary-purple",
-  height = "h-12",
-  width = "w-75",
-  borderRadius = "rounded-sm",
-  hover = 'hover:bg-yellow'
-}: BtnProps) {
-  return (
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      type={type}
-      className={`${hover} ${fontSize} ${bgColor} ${textColor} ${height} ${width} ${borderRadius} font-bold cursor-pointer transition-all duration-700`}
-    >
-      {text}
-    </motion.button>
-  );
-}
+export const ButtonAvtr = React.forwardRef<HTMLButtonElement, BtnProps>(
+  (
+    {
+      type = "button",
+      text,
+      fontSize = "text-xl",
+      bgColor = "bg-blue",
+      textColor = "text-tertiary-purple",
+      height = "h-12",
+      width = "w-75",
+      borderRadius = "rounded-sm",
+      hover = "hover:bg-yellow",
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <motion.button
+        ref={ref}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        type={type}
+        className={`${hover} ${fontSize} ${bgColor} ${textColor} ${height} ${width} ${borderRadius} font-bold cursor-pointer transition-all duration-700`}
+        {...props}
+      >
+        {text}
+      </motion.button>
+    );
+  }
+);
+
+ButtonAvtr.displayName = "ButtonAvtr";
