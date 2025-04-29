@@ -21,6 +21,7 @@ interface UserData {
   phone: string;
   rule: string;
   authToken: any;
+  unitName: string;
 }
 
 interface AuthContextData {
@@ -86,6 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 phone: data.phone,
                 rule: claims.rule,
                 authToken: idTokenResult,
+                unitName: data.unitName
               });
               setIsLoading(false);
             },
