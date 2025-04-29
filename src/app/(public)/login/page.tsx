@@ -9,14 +9,14 @@ import {
   SignInFormData,
   forgotPasswordSchema,
   ForgotPasswordFormData,
-} from "./schemas/validationForm";
+} from "../../schemas/validationForm";
 import Image from "next/image";
-import { ButtonAvtr } from "./../components/myComponents/ButtonAvtr";
+import { ButtonAvtr } from "@/components/myComponents/ButtonAvtr";
 import { InputAvtr } from "@/components/myComponents/InputAvtr";
 import { BackButton } from "@/components/myComponents/BackButton";
 import { useAuth } from "@/context/Auth";
 
-function AuthPage() {
+export default function AuthPage() {
   const { signIn, forgotPassword } = useAuth();
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
@@ -94,9 +94,7 @@ function AuthPage() {
                     <span></span>
                   </div>
                 </div>
-                <form
-                  onSubmit={handleForgotPasswordSubmit(onSubmitForgetPass)}
-                >
+                <form onSubmit={handleForgotPasswordSubmit(onSubmitForgetPass)}>
                   <div className="flex flex-col gap-3">
                     <InputAvtr
                       type="email"
@@ -162,5 +160,3 @@ function AuthPage() {
     </div>
   );
 }
-
-export default AuthPage;

@@ -1,8 +1,10 @@
+"use client";
+
 import React from "react";
 
 import { useAuth } from "@/context/Auth";
 
-export function Home(){
+export default function Dashboard(){
     const { isLoading } = useAuth();
     
     if(isLoading) {
@@ -11,7 +13,7 @@ export function Home(){
 
     return (
         <div>
-            <p>Home</p>
+            <p>Dashboard Home</p>
         </div>
     )
 }

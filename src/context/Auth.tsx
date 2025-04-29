@@ -9,7 +9,8 @@ import {
 import { auth } from "../lib/firebaseConfig";
 import { db } from "../lib/firebaseConfig";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { useRouter } from "next/navigation";
 
 interface UserData {
   displayName: string;
@@ -19,6 +20,7 @@ interface UserData {
   profilePicture: string;
   phone: string;
   rule: string;
+  authToken: any;
 }
 
 interface AuthContextData {
@@ -45,6 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
 
+  const router = useRouter();
+
   useEffect(() => {
     let unsubscribeSnapshot: (() => void) | null = null;
 
@@ -60,6 +64,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
           await user.reload(); // Recarrega pq pode ser que o token esteja armazenado no cache.
           const idTokenResult = await user.getIdTokenResult();
+
           if (!idTokenResult) {
             throw new Error("Usuário inválido!");
           }
@@ -80,6 +85,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 profilePicture: data.profilePicture,
                 phone: data.phone,
                 rule: claims.rule,
+                authToken: idTokenResult,
               });
               setIsLoading(false);
             },
@@ -108,8 +114,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   async function signIn(email: string, password: string, checked: boolean) {
     try {
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      await user.reload();
       const idTokenResult = await user.getIdTokenResult();
+    
+      const idToken = await user.getIdToken();
+      const res = await fetch("/api/sessionLogin", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ idToken }),
+      });
 
       const rawRole = idTokenResult.claims.rule;
       if (typeof rawRole !== "string") {
@@ -124,7 +136,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return "Acesso negado: você não tem permissão para acessar esta página!";
       }
 
-      return 'Usuário autenticado com sucesso!';
+      if (res.ok) router.replace("/");
+      return "Usuário autenticado com sucesso!";
     } catch (err: any) {
       switch (err.code) {
         case "auth/invalid-email":
@@ -157,6 +170,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       await signOut(auth);
+
+      await fetch("/api/sessionLogout", { method: "POST" });
     } catch (err: any) {
       switch (err.code) {
         case "auth/no-current-user":
@@ -164,6 +179,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         case "auth/network-request-failed":
           return "Falha de conexão com a internet";
         default:
+          console.error(err)
           return "Erro desconhecido ao deslogar, entre em contato com o suporte!";
       }
     }
