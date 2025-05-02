@@ -9,7 +9,7 @@ export default function PrivateLayout({
     <SidebarProvider>
       <AppSidebar />
       <main className="h-screen w-full">
-        <SidebarTrigger className="cursor-pointer absolute mt-3 ml-2"/>
+        <SidebarTrigger className="cursor-pointer absolute mt-3 ml-2 text-white" />
         {children}
       </main>
     </SidebarProvider>

@@ -54,16 +54,18 @@ const items = [
 ];
 
 const subItems = [
-  { tittle: "Afiliação", url: "#" },
-  { tittle: "Saque", url: "#" },
+  { tittle: "Afiliação", url: "/membership-requests" },
+  { tittle: "Saque", url: "/withdraw-requests" },
 ];
 
 export function AppSidebar() {
   const { userData } = useAuth();
 
   return (
-    <Sidebar className="bg-white border-none">
-      <SidebarContent className="bg-fifth-purple text-white rounded-tr-3xl">
+    <Sidebar className="border-none"
+    style={{ '--sidebar': '#170138' } as React.CSSProperties}
+    >
+      <SidebarContent className="bg-[#fff] text-black rounded-tr-3xl">
         <SidebarHeader>
           <div className="flex flex-row items-center gap-3 mt-5 ml-1">
             <Image
@@ -77,7 +79,7 @@ export function AppSidebar() {
           </div>
         </SidebarHeader>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white text-[1rem]">MENU</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-black text-[1rem]">MENU</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -117,7 +119,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-        <SidebarFooter className="bg-fifth-purple text-white rounded-br-3xl">
+        <SidebarFooter className="bg-[#fff] text-black rounded-br-3xl">
           <SidebarMenu>
             <SidebarMenuItem>
               <DropdownMenu>

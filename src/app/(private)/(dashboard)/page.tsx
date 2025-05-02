@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
-import { IoIosShareAlt } from "react-icons/io";
 
 import { useAuth } from "@/context/Auth";
 import { Card } from "@/components/myComponents/dashboard/Card";
+import { cardsContent } from "@/data/cardsDashoard";
+import { List } from "@/components/myComponents/dashboard/List";
+import { listBiggestIndicators } from "@/data/listBiggestIndicators";
+import { BarChartAvtr } from "@/components/myComponents/dashboard/BarChart";
 
 export default function Dashboard() {
   const { isLoading } = useAuth();
@@ -14,42 +17,30 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="w-full h-full py-2 pr-2">
-      <div className="rounded-[35px] h-full pt-12 pl-10 pr-8">
-        <p className="text-2xl">Dashboard</p>
-        <div className="h-[90%] mt-8 bg-blue">
-            <div className="w-full flex flex-row gap-3">
-                <Card 
-                value="2.022"
-                label="Total Indicações do mês"
-                growth="2.1"
-                icon={<IoIosShareAlt color="white"/>}
-                />
-                <Card 
-                value="2.022"
-                label="Total Indicações do mês"
-                growth="2.1"
-                icon={<IoIosShareAlt />}
-                />
-                <Card 
-                value="2.022"
-                label="Total Indicações do mês"
-                growth="-1.2"
-                icon={<IoIosShareAlt />}
-                />
-                <Card 
-                value="2.022"
-                label="Total Indicações do mês"
-                growth="0"
-                icon={<IoIosShareAlt />}
-                />
-                <Card 
-                value="2.022"
-                label="Total Indicações do mês"
-                growth="-1.5"
-                icon={<IoIosShareAlt />}
-                />
-            </div>
+    <div className="w-full h-full bg-fifth-purple">
+      <div className="h-full pt-9 pl-8 pr-8">
+        <p className="text-2xl text-[#fff]">Dashboard</p>
+        <div className="h-[90%] mt-8 ">
+          <div className="w-full flex flex-row gap-2">
+            {cardsContent.map((card) => (
+              <Card
+                value={card.value}
+                icon={card.icon}
+                label={card.label}
+                growth={card.growth}
+                isCash={card.isCash}
+              />
+            ))}
+          </div>
+
+          <div className="mt-2">
+            <List items={listBiggestIndicators}/>
+          </div>
+
+          <div className="mt-2 flex gap-4 justify-center">
+            <BarChartAvtr/>
+            <BarChartAvtr/>
+          </div>
         </div>
       </div>
     </div>
