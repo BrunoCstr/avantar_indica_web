@@ -17,7 +17,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import WithdrawRequest from "../withdraw-requests/page";
 
 interface AffiliationRequest {
   id: number;
@@ -166,18 +165,18 @@ export default function MembershipRequests() {
                 <tbody>
                   {affiliations.map((req) => (
                     <tr key={req.id} className="even:bg-[#fff] odd:bg-gray-50">
-                      <td className="px-4 py-2 text-[0.9rem]">{req.name}</td>
-                      <td className="px-4 py-2 text-[0.9rem]">{req.date}</td>
+                      <td className="px-4 py-2">{req.name}</td>
+                      <td className="px-4 py-2">{req.date}</td>
                       <td className="px-4 py-2">
                         <Select defaultValue={req.role}>
                           <SelectTrigger className="w-full">
                             <SelectValue placeholder="Selecione regra" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Cliente Indicador" className="text-[0.9rem]">
+                            <SelectItem value="Cliente Indicador">
                               Cliente Indicador
                             </SelectItem>
-                            <SelectItem value="Parceiro Indicador" className="text-[0.9rem]">
+                            <SelectItem value="Parceiro Indicador">
                               Parceiro Indicador
                             </SelectItem>
                           </SelectContent>
@@ -185,7 +184,7 @@ export default function MembershipRequests() {
                       </td>
                       <td className="px-4 py-2 space-x-2 text-center">
                         <Button
-                          className="cursor-pointer bg-primary-purple hover:bg-secondary-lillac transition-all duration-700 text-[0.9rem]"
+                          className="cursor-pointer bg-primary-purple hover:bg-secondary-lillac transition-all duration-700"
                           variant="default"
                           size="sm"
                           onClick={() => openConfirm(req.id, 'approve')}
@@ -193,7 +192,7 @@ export default function MembershipRequests() {
                           Aprovar
                         </Button>
                         <Button
-                          className="cursor-pointer text-[0.9rem] hover:bg-red-400 transition-all duration-700"
+                          className="cursor-pointer hover:bg-red-400 transition-all duration-700"
                           variant="destructive"
                           size="sm"
                           onClick={() => openConfirm(req.id, 'reject')}

@@ -43,12 +43,12 @@ const items = [
   },
   {
     title: "Parceiros",
-    url: "#",
+    url: "/partners",
     icon: FaPeopleArrows,
   },
   {
     title: "Indicações",
-    url: "#",
+    url: "/indications",
     icon: FaShare,
   },
 ];
@@ -59,17 +59,18 @@ const subItems = [
 ];
 
 export function AppSidebar() {
-  const { userData } = useAuth();
+  const { userData, signOut } = useAuth();
 
   return (
-    <Sidebar className="border-none"
-    style={{ '--sidebar': '#170138' } as React.CSSProperties}
+    <Sidebar
+      className="border-none"
+      style={{ "--sidebar": "#170138" } as React.CSSProperties}
     >
       <SidebarContent className="bg-[#fff] text-black rounded-tr-3xl">
         <SidebarHeader>
           <div className="flex flex-row items-center gap-3 mt-5 ml-1">
             <Image
-            className="rounded-2xl cursor-pointer"
+              className="rounded-2xl cursor-pointer"
               src="/default_unit_profile_picture.png"
               alt="logo"
               width={50}
@@ -79,14 +80,19 @@ export function AppSidebar() {
           </div>
         </SidebarHeader>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-black text-[1rem]">MENU</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-black text-[1rem]">
+            MENU
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title} className="pt-1">
-                  <SidebarMenuButton asChild className="transition-colors duration-700 ease-in-out text-[1rem]">
+                  <SidebarMenuButton
+                    asChild
+                    className="transition-colors duration-700 ease-in-out text-[1rem]"
+                  >
                     <a href={item.url}>
-                      <item.icon/>
+                      <item.icon />
                       <span>{item.title}</span>
                     </a>
                   </SidebarMenuButton>
@@ -97,7 +103,7 @@ export function AppSidebar() {
                 <SidebarMenuItem className="pt-1">
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton className="cursor-pointer transition-colors duration-700 ease-in-out text-[1rem]">
-                      <MdRequestPage/>
+                      <MdRequestPage />
                       <span>Solicitações</span>
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
@@ -105,7 +111,10 @@ export function AppSidebar() {
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       {subItems.map((item) => (
-                        <SidebarMenuSubItem key={item.tittle} className="cursor-pointer">
+                        <SidebarMenuSubItem
+                          key={item.tittle}
+                          className="cursor-pointer"
+                        >
                           <a href={item.url}>
                             <span>{item.tittle}</span>
                           </a>
@@ -119,37 +128,43 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-        <SidebarFooter className="bg-[#fff] text-black rounded-br-3xl">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <SidebarMenuButton className="cursor-pointer h-12 transition-colors duration-700 ease-in-out">
+      <SidebarFooter className="bg-[#fff] text-black rounded-br-3xl">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="w-full outline-none" asChild>
+                <SidebarMenuButton className="cursor-pointer h-12 transition-colors duration-700 ease-in-out">
                   <Image
-                  className="rounded-2xl"
-                  src={userData?.profilePicture ?? '/default_profile_picture.png'}
-                  alt="logo"
-                  width={35}
-                  height={35}
-                  /> {userData?.displayName}
-                    <ChevronUp className="ml-auto" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  className="w-[--radix-popper-anchor-width]"
+                    className="rounded-2xl"
+                    src={
+                      userData?.profilePicture ?? "/default_profile_picture.png"
+                    }
+                    alt="logo"
+                    width={35}
+                    height={35}
+                  />{" "}
+                  {userData?.displayName}
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width]"
+              >
+                <DropdownMenuItem className="cursor-pointer">
+                  <span>Conta</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => signOut()}
                 >
-                  <DropdownMenuItem>
-                    <span>Conta</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <span>Sair</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
+                  <span>Sair</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }

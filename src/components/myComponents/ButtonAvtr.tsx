@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 interface BtnProps {
   type?: "button" | "submit" | "reset";
-  text: string;
+  text: React.ReactNode;
   bgColor?: string;
   textColor?: string;
   height?: string;
@@ -35,7 +35,7 @@ export const ButtonAvtr = React.forwardRef<HTMLButtonElement, BtnProps>(
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         type={type}
-        className={`${hover} ${fontSize} ${bgColor} ${textColor} ${height} ${width} ${borderRadius} font-bold cursor-pointer transition-all duration-700`}
+        className={`${hover} ${fontSize} ${bgColor} ${textColor} ${height} ${width} ${borderRadius} font-bold cursor-pointer transition-all duration-700 flex items-center justify-center`}
         {...props}
       >
         {text}

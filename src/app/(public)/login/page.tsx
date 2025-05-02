@@ -15,9 +15,10 @@ import { ButtonAvtr } from "@/components/myComponents/ButtonAvtr";
 import { InputAvtr } from "@/components/myComponents/InputAvtr";
 import { BackButton } from "@/components/myComponents/BackButton";
 import { useAuth } from "@/context/Auth";
+import { Spinner } from "@/components/myComponents/SpinnerLoading";
 
 export default function AuthPage() {
-  const { signIn, forgotPassword } = useAuth();
+  const { signIn, forgotPassword, isLoadingLogin } = useAuth();
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const [stayConnected, setStayConncted] = useState(false);
@@ -102,7 +103,10 @@ export default function AuthPage() {
                       errorMessage={errorsForgotPassword.emailForgot?.message}
                       {...registerForgotPassword("emailForgot")}
                     />
-                    <ButtonAvtr type="submit" text="ENVIAR" />
+                    <ButtonAvtr
+                      type="submit"
+                      text="Enviar"
+                    />
                   </div>
                 </form>
               </div>
@@ -125,7 +129,7 @@ export default function AuthPage() {
                       {...register("password")}
                       placeholder="Senha"
                     />
-                    <ButtonAvtr type="submit" text="ENTRAR" />
+                    <ButtonAvtr type="submit" text={isLoadingLogin ? <Spinner /> : "ENVIAR"} />
                   </div>
                 </form>
                 <div className="flex flex-row justify-between w-75 mt-2">

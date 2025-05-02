@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useActionState, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,12 +12,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 type IndicationsType = {
+  id: number;
   createdAt: string;
   name: string;
   product: string;
   phone: string;
   status: string;
-  idProducao: string;
+  idProducao?: string | null;
 };
 
 interface WithdrawRequestsProps {
@@ -38,20 +39,22 @@ const WithdrawRequests: WithdrawRequestsProps[] = [
     value: 1200.5,
     indications: [
       {
+        id: 32,
         createdAt: "27/04/2025",
         name: "Saul Goodman",
         product: "Consultoria Jurídica",
         phone: "(11) 98765-4321",
-        status: "APROVADO",
-        idProducao: "1001",
+        status: "PENDETE CONTATO",
+        idProducao: null,
       },
       {
+        id: 123,
         createdAt: "28/04/2025",
         name: "Mike Ehrmantraut",
         product: "Segurança",
         phone: "(21) 98888-1122",
-        status: "CANCELADO",
-        idProducao: "1002",
+        status: "CONTATO REALIZADO",
+        idProducao: null,
       },
     ],
   },
@@ -63,12 +66,13 @@ const WithdrawRequests: WithdrawRequestsProps[] = [
     value: 750.0,
     indications: [
       {
+        id: 1221,
         createdAt: "29/04/2025",
         name: "Walter White",
         product: "Equipamentos",
         phone: "(33) 99944-2685",
-        status: "PENDENTE",
-        idProducao: "3111",
+        status: "NÃO INTERESSOU",
+        idProducao: null,
       },
     ],
   },
@@ -80,11 +84,12 @@ const WithdrawRequests: WithdrawRequestsProps[] = [
     value: 560.75,
     indications: [
       {
+        id: 12513,
         createdAt: "24/04/2025",
         name: "Ted Beneke",
         product: "Contabilidade",
         phone: "(19) 99999-9988",
-        status: "APROVADO",
+        status: "FECHADO",
         idProducao: "4321",
       },
     ],
@@ -97,20 +102,31 @@ const WithdrawRequests: WithdrawRequestsProps[] = [
     value: 2300.0,
     indications: [
       {
+        id: 16723,
         createdAt: "29/04/2025",
         name: "Victor",
         product: "Distribuição",
         phone: "(27) 97777-2233",
-        status: "APROVADO",
-        idProducao: "5510",
+        status: "NÃO FECHADO",
+        idProducao: null,
       },
       {
+        id: 131223,
         createdAt: "30/04/2025",
         name: "Tyrus Kitt",
         product: "Logística",
         phone: "(27) 95555-3344",
-        status: "PENDENTE",
-        idProducao: "5511",
+        status: "SEGURO RECUSADO",
+        idProducao: null,
+      },
+      {
+        id: 13123323,
+        createdAt: "30/04/2025",
+        name: "DEA",
+        product: "Equipamentos",
+        phone: "(27) 95555-3344",
+        status: "INICIO DE PROPOSTA",
+        idProducao: null,
       },
     ],
   },
@@ -122,12 +138,13 @@ const WithdrawRequests: WithdrawRequestsProps[] = [
     value: 890.25,
     indications: [
       {
+        id: 12436883,
         createdAt: "25/04/2025",
         name: "Marie Schrader",
         product: "Consultoria",
         phone: "(31) 98888-7766",
-        status: "CANCELADO",
-        idProducao: "6620",
+        status: "AGUARDANDO CLIENTE",
+        idProducao: null,
       },
     ],
   },
@@ -140,7 +157,8 @@ export default function WithdrawRequest() {
   const [isModalDialogOpen, setIsModalDialogOpen] = useState(false);
   const [isModalIndicationsOpen, setIsModalIndicationsOpen] = useState(false);
   const [userSelectedID, setUserSelectedID] = useState("");
-  const [indicationsForUserSelected, setIndicationsForUserSelected] = useState<WithdrawRequestsProps | null>(null)
+  const [indicationsForUserSelected, setIndicationsForUserSelected] =
+    useState<WithdrawRequestsProps | null>(null);
   const [current, setCurrent] = useState<{
     id: number;
     action: ActionType;
@@ -166,10 +184,10 @@ export default function WithdrawRequest() {
   const openIndicationsModal = (userSelected: string) => {
     setUserSelectedID(userSelected);
     setIsModalIndicationsOpen(true);
-    console.log("ID:" ,userSelected);
+    console.log("ID:", userSelected);
 
     setIndicationsForUserSelected(
-      withdraws.find((withdraws) => withdraws.uid.includes(userSelected)) ?? {}
+      withdraws.find((withdraws) => withdraws.uid === userSelected) ?? null
     );
   };
 
@@ -204,18 +222,18 @@ export default function WithdrawRequest() {
                           key={item.id}
                           className="even:bg-[#fff] odd:bg-gray-50"
                         >
-                          <td className="px-4 py-2 text-[0.9rem]">
+                          <td className="px-4 py-2">
                             {item.name}
                           </td>
-                          <td className="px-4 py-2 text-[0.9rem]">
+                          <td className="px-4 py-2">
                             {item.date}
                           </td>
-                          <td className="px-4 py-2 text-[0.9rem]">
+                          <td className="px-4 py-2">
                             R$ {item.value}
                           </td>
                           <td className="px-4 py-2 space-x-2 text-center">
                             <Button
-                              className="cursor-pointer bg-primary-purple w-18 hover:bg-secondary-lillac transition-all duration-700 text-[0.9rem]"
+                              className="cursor-pointer bg-primary-purple w-18 hover:bg-secondary-lillac transition-all duration-700"
                               variant="default"
                               size="sm"
                               onClick={() => openIndicationsModal(item.uid)}
@@ -225,7 +243,7 @@ export default function WithdrawRequest() {
                           </td>
                           <td className="px-4 py-2 space-x-2 text-center">
                             <Button
-                              className="cursor-pointer bg-primary-purple hover:bg-secondary-lillac transition-all duration-700 text-[0.9rem]"
+                              className="cursor-pointer bg-primary-purple hover:bg-secondary-lillac transition-all duration-700"
                               variant="default"
                               size="sm"
                               onClick={() => openConfirm(item.id, "approve")}
@@ -233,7 +251,7 @@ export default function WithdrawRequest() {
                               Aprovar
                             </Button>
                             <Button
-                              className="cursor-pointer text-[0.9rem] hover:bg-red-400 transition-all duration-700"
+                              className="cursor-pointer hover:bg-red-400 transition-all duration-700"
                               variant="destructive"
                               size="sm"
                               onClick={() => openConfirm(item.id, "reject")}
@@ -290,8 +308,7 @@ export default function WithdrawRequest() {
             </Dialog>
 
             {/* Modal de Indicações */}
-            { indicationsForUserSelected?.indications.map(item => (
-              <Dialog
+            <Dialog
               open={isModalIndicationsOpen}
               onOpenChange={(open) => {
                 setIsModalIndicationsOpen(open);
@@ -301,28 +318,67 @@ export default function WithdrawRequest() {
               }}
             >
               <DialogContent
-                className="w-[65%] h-[75%] border-2 border-blue"
+                className="w-[65%] h-[75%] flex flex-col border-2 border-blue"
                 style={{ maxWidth: "none" } as React.CSSProperties}
               >
                 <DialogHeader>
-                  <DialogTitle>Indicações de {indicationsForUserSelected.name}</DialogTitle>
+                  <DialogTitle>
+                    Indicações de {indicationsForUserSelected?.name}
+                  </DialogTitle>
                 </DialogHeader>
-                <p className="py-4 text-center">
-                  Você realmente deseja{" "}
-                  <strong
-                    className={
-                      current?.action === "approve"
-                        ? "text-primary-purple"
-                        : "text-red"
-                    }
-                  >
-                    {current?.action === "approve" ? "aprovar" : "rejeitar"}
-                  </strong>{" "}
-                  esta solicitação?
-                </p>
+
+                <div className="overflow-x-auto rounded-2xl">
+                  <table className="min-w-full table-fixed">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="px-4 py-2 text-left">
+                          Nome da Indicação
+                        </th>
+                        <th className="px-4 py-2 text-left">Produto</th>
+                        <th className="px-4 py-2 text-left">Telefone</th>
+                        <th className="px-4 py-2">Status</th>
+                        <th className="px-4 py-2">ID (SGCOR)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {indicationsForUserSelected?.indications.map((item) => (
+                        <tr
+                          key={item.id}
+                          className="even:bg-[#fff] odd:bg-gray-50"
+                        >
+                          <td className="px-4 py-2">
+                            {item.name}
+                          </td>
+                          <td className="px-4 py-2">
+                            {item.product}
+                          </td>
+                          <td className="px-4 py-2">
+                            {item.phone}
+                          </td>
+                          <td
+                            className={`px-4 py-2 ${
+                              item.status === "PENDENTE CONTATO"
+                                ? "text-orange"
+                                : item.status === "FECHADO"
+                                ? "text-green"
+                                : item.status === "SEGURO RECUSADO" ||
+                                  item.status === "NÃO FECHADO"
+                                ? "text-red"
+                                : "text-[#000000]"
+                            } space-x-2 text-center`}
+                          >
+                            {item.status}
+                          </td>
+                          <td className="px-4 py-2 space-x-2 text-center">
+                            {item.idProducao || "Não possui"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </DialogContent>
             </Dialog>
-            )) }
           </>
         ) : (
           <Card className="h-[92%] overflow-x-auto no-scrollbar flex justify-center items-center">

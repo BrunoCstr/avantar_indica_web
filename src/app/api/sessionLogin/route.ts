@@ -12,19 +12,22 @@ export async function POST(req: NextRequest) {
     const expiresIn = 60 * 60 * 24 * 5 * 1000;
     const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
 
-    const res = NextResponse.json({ ok: true });
+    const response = new NextResponse(JSON.stringify({ok: true}), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    // Seta o cookie já verificado
-    res.cookies.set("authToken", sessionCookie, {
+    response.cookies.set("authToken", sessionCookie, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === 'production',
       sameSite: "lax",
       maxAge: expiresIn / 1000,
       path: "/",
-    });
+    })
 
-    return res;
-
+    return response;
   } catch (err) {
     console.error("ID token inválido:", err);
     return NextResponse.json({ error: "credenciais inválidas" }, { status: 401 });

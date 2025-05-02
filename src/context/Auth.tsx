@@ -34,6 +34,7 @@ interface AuthContextData {
   signOut: () => Promise<void | string>;
   forgotPassword: (email: string) => Promise<null | string>;
   isLoading: boolean;
+  isLoadingLogin: boolean; 
   userData: UserData | null;
 }
 
@@ -46,6 +47,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [userAuthenticated, setIsUserAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
 
   const router = useRouter();
@@ -87,7 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 phone: data.phone,
                 rule: claims.rule,
                 authToken: idTokenResult,
-                unitName: data.unitName
+                unitName: data.unitName,
               });
               setIsLoading(false);
             },
@@ -101,10 +103,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           setIsUserAuthenticated(false);
           setUserData(null);
+          router.push("/login");
         }
       } else {
         setIsUserAuthenticated(false);
         setUserData(null);
+        router.push("/login");
       }
 
       setIsLoading(false);
@@ -115,9 +119,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   async function signIn(email: string, password: string, checked: boolean) {
     try {
+      setIsLoadingLogin(true);
+
       const { user } = await signInWithEmailAndPassword(auth, email, password);
       const idTokenResult = await user.getIdTokenResult();
-    
+
       const idToken = await user.getIdToken();
       const res = await fetch("/api/sessionLogin", {
         method: "POST",
@@ -128,6 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const rawRole = idTokenResult.claims.rule;
       if (typeof rawRole !== "string") {
         await signOut(auth);
+        setIsLoadingLogin(false);
         return "Acesso negado: sem regra válida.";
       }
       const role = rawRole;
@@ -135,12 +142,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const allowedRoles = ["admin_franqueadora", "admin_unidade"];
       if (!allowedRoles.includes(role)) {
         await signOut(auth);
+        setIsLoadingLogin(false);
         return "Acesso negado: você não tem permissão para acessar esta página!";
       }
 
-      if (res.ok) router.replace("/");
+      if (res.ok) {
+        router.replace("/");
+        setIsLoadingLogin(false);
+      }
       return "Usuário autenticado com sucesso!";
     } catch (err: any) {
+      setIsLoadingLogin(false);
       switch (err.code) {
         case "auth/invalid-email":
           return "E-mail inválido!";
@@ -174,6 +186,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await signOut(auth);
 
       await fetch("/api/sessionLogout", { method: "POST" });
+
+      router.push("/login");
     } catch (err: any) {
       switch (err.code) {
         case "auth/no-current-user":
@@ -181,7 +195,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         case "auth/network-request-failed":
           return "Falha de conexão com a internet";
         default:
-          console.error(err)
+          console.error(err);
           return "Erro desconhecido ao deslogar, entre em contato com o suporte!";
       }
     }
@@ -219,6 +233,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isLoading,
         userData,
         forgotPassword,
+        isLoadingLogin
       }}
     >
       {children}
