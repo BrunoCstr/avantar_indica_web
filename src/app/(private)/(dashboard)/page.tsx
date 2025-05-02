@@ -8,12 +8,13 @@ import { cardsContent } from "@/data/cardsDashoard";
 import { List } from "@/components/myComponents/dashboard/List";
 import { listBiggestIndicators } from "@/data/listBiggestIndicators";
 import { BarChartAvtr } from "@/components/myComponents/dashboard/BarChart";
+import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 
 export default function Dashboard() {
   const { isLoading } = useAuth();
 
   if (isLoading) {
-    return <p>Carregando... Colocar skeleton</p>;
+    return <DashboardSkeleton/>
   }
 
   return (

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { User2, ChevronUp } from "lucide-react";
+import { ChevronUp } from "lucide-react";
 import { RiDashboardFill } from "react-icons/ri";
 import { MdRequestPage } from "react-icons/md";
 import { FaShare } from "react-icons/fa";
@@ -33,6 +33,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useAuth } from "@/context/Auth";
+import {SidebarSkeleton} from "@/components/skeletons/SidebarSkeleton"
 
 // Menu items.
 const items = [
@@ -59,7 +60,11 @@ const subItems = [
 ];
 
 export function AppSidebar() {
-  const { userData, signOut } = useAuth();
+  const { userData, signOut, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <SidebarSkeleton/>
+  }
 
   return (
     <Sidebar
