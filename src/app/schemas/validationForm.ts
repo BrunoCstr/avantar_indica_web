@@ -15,3 +15,23 @@ export const forgotPasswordSchema = z.object({
 })
 
 export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+
+// Validação de edição do usuário
+export const editUserSchema = z.object({
+  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres!"),
+  email: z.string().email("Formato de e-mail inválido!"),
+  phone: z.string().min(10, "O telefone deve ter pelo menos 10 caracteres!"),
+  pixKey: z.string().min(5, "A chave pix deve ter pelo menos 5 caracteres!"),
+  rule: z.string().min(1, "Selecione uma regra!"),
+})
+export type EditUserFormData = z.infer<typeof editUserSchema>;
+
+
+// Validação da edição de indicação
+export const editIndicationSchema = z.object({
+  product: z.string().min(3, "O produto deve ter pelo menos 3 caracteres!"),
+  phone: z.string().min(10, "O telefone deve ter pelo menos 10 caracteres!"),
+  status: z.string().min(5, "O status deve ter pelo menos 5 caracteres!"),
+})
+export type EditIndicationFormData = z.infer<typeof editIndicationSchema>;

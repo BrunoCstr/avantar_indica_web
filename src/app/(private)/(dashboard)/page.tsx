@@ -18,7 +18,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="w-full h-full bg-fifth-purple">
+    <div className="w-full h-full bg-[url('/bg-default.png')] bg-cover bg-no-repeat bg-center">
       <div className="h-full pt-9 pl-8 pr-8">
         <p className="text-2xl text-[#fff]">Dashboard</p>
         <div className="h-[90%] mt-8 ">

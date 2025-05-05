@@ -12,6 +12,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MdEdit } from "react-icons/md";
+import { EditUserFormData, editUserSchema } from "@/app/schemas/validationForm";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogDescription } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface PartnersProps {
   email: string;
@@ -130,25 +135,25 @@ type ActionType = "approve" | "reject";
 export default function Partners() {
   const [partners, setPartners] = useState(affiliationRequests);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  const [partnerSelected, setPartnerSelected] =
-      useState<PartnersProps | null>(null);
-  const [indicationSelectedID, setIndicationID] = useState("");
+
+  const [partnerSelected, setPartnerSelected] = useState<PartnersProps | null>(
+    null
+  );
+  const [partnerUID, setPartnetUID] = useState("");
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
 
-      const [current, setCurrent] = useState<{
+  const [current, setCurrent] = useState<{
     id: string;
     action: ActionType;
   } | null>(null);
-  
+
   const [search, setSearch] = useState("");
-  
+
   const [sortConfig, setSortConfig] = useState<{
     key: keyof PartnersProps;
     direction: "asc" | "desc";
   } | null>(null);
-  
-    
+
   const openConfirm = (id: string, action: ActionType) => {
     setCurrent({ id, action });
     setIsModalOpen(true);
@@ -202,16 +207,43 @@ export default function Partners() {
     });
   };
 
-  const openEditModal = (partnerSelected: string) => {
-    setIndicationID(partnerSelected);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<EditUserFormData>({
+    resolver: zodResolver(editUserSchema),
+    defaultValues: {
+      name: "",
+      phone: "",
+      email: "",
+      pixKey: "",
+      rule: "",
+    },
+  });
+
+  const openEditModal = (partnerUIDSelected: string) => {
+    setPartnetUID(partnerUIDSelected);
     setIsModalEditOpen(true);
-    console.log("ID:", partnerSelected);
+    console.log("ID:", partnerUIDSelected);
 
     setPartnerSelected(
-      partners.find(
-        (partner) => partner.uid === partnerSelected
-      ) ?? null
+      partners.find((partner) => partner.uid === partnerUIDSelected) ?? null
     );
+  };
+
+  if (partnerSelected) {
+    setValue("name", partnerSelected.fullName);
+    setValue("phone", partnerSelected.phone);
+    setValue("email", partnerSelected.email);
+    setValue("pixKey", partnerSelected.pixKey ?? "");
+    setValue("rule", partnerSelected.rule);
+  }
+
+  const onSubmit = (data: EditUserFormData) => {
+    //Lógica para enviar o formulário de edição
+    console.log("Dados do usuário editado:", data);
   };
 
   return (
@@ -265,6 +297,7 @@ export default function Partners() {
                         (sortConfig.direction === "asc" ? "↑" : "↓")}
                     </th>
                     <th className="px-4 py-2 text-left">Chave Pix</th>
+                    <th className="px-4 py-2 text-left">Excluir</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -276,9 +309,7 @@ export default function Partners() {
                       <td className="px-4 py-2">
                         <MdEdit
                           className="cursor-pointer"
-                          onClick={() =>
-                            openEditModal(item.uid)
-                          }
+                          onClick={() => openEditModal(item.uid)}
                           size={20}
                         />
                       </td>
@@ -288,6 +319,16 @@ export default function Partners() {
                         {item.indications}
                       </td>
                       <td className="px-4 py-2 space-x-2 ">{item.pixKey}</td>
+                      <td className="px-4 py-2 text">
+                        <Button
+                          className="cursor-pointer bg-red hover:bg-red-400 transition-all duration-700 text-[0.9rem]"
+                          variant="default"
+                          size="sm"
+                          onClick={() => openConfirm(item.uid, "reject")}
+                        >
+                          Excluir
+                        </Button>
+                      </td>
                     </tr>
                   ))}
 
@@ -295,19 +336,25 @@ export default function Partners() {
                   <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                     <DialogContent className="w-100 border-2 border-blue">
                       <DialogHeader>
-                        <DialogTitle>Deseja Salvar?</DialogTitle>
+                        <DialogTitle>Deseja Excluir?</DialogTitle>
                       </DialogHeader>
                       <p className="py-4 text-center">
-                        Você realmente deseja salvar estas alterações?
+                        Você realmente deseja excluir este usuário?
                       </p>
                       <DialogFooter className="flex justify-end space-x-2">
                         <Button
-                          className="cursor-pointer bg-primary-purple hover:bg-secondary-lillac transition-all duration-700 text-[0.9rem]"
-                          variant="default"
-                          size="sm"
-                          onClick={() => openConfirm(item.uid, "approve")}
+                          variant="outline"
+                          className="cursor-pointer"
+                          onClick={() => setIsModalOpen(false)}
                         >
-                          Salvar
+                          Cancelar
+                        </Button>
+                        <Button
+                          className="cursor-pointer  bg-red hover:bg-red-400 transition-all duration-700"
+                          variant="default"
+                          onClick={() => openConfirm("123", "approve")}
+                        >
+                          Excluir
                         </Button>
                       </DialogFooter>
                     </DialogContent>
@@ -317,7 +364,31 @@ export default function Partners() {
             </div>
           </div>
         </Card>
-        {/* Modal de Observações */}
+
+        {/* Modal de Observações
+          <Dialog
+            open={isModalEditOpen}
+            onOpenChange={(open) => {
+              setIsModalEditOpen(open);
+              if (!open) {
+                setPartnerSelected(null);
+              }
+            }}
+          >
+            <DialogContent
+              className="w-[40%] h-[50%] flex flex-col border-2 border-blue"
+              style={{ maxWidth: "none" } as React.CSSProperties}
+            >
+              <DialogHeader>
+                <DialogTitle></DialogTitle>
+              </DialogHeader>
+
+              <div className="overflow-x-auto">
+                <h1 className="font-bold">Editar usuário</h1>
+              </div>
+            </DialogContent>
+          </Dialog> */}
+
         <Dialog
           open={isModalEditOpen}
           onOpenChange={(open) => {
@@ -327,20 +398,70 @@ export default function Partners() {
             }
           }}
         >
-          <DialogContent
-            className="w-[40%] h-[50%] flex flex-col border-2 border-blue"
-            style={{ maxWidth: "none" } as React.CSSProperties}
-          >
+          <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle></DialogTitle>
+              <DialogTitle>Editar usuário</DialogTitle>
+              <DialogDescription>
+                Faça alterações no usuário selecionado. Clique em "Salvar"
+                quando terminar.
+              </DialogDescription>
             </DialogHeader>
-
-            <div className="overflow-x-auto">
-              <h1 className="font-bold">Editar usuário</h1>
-              <div>
-                {partnerSelected?.fullName}
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Nome
+                </Label>
+                <Input id="name" className="col-span-3" {...register("name")} />
+                {errors.name && <span>{errors.name.message}</span>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  E-mail
+                </Label>
+                <Input
+                  id="username"
+                  className="col-span-3"
+                  {...register("email")}
+                />
+                {errors.email && <span>{errors.email.message}</span>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Chave Pix
+                </Label>
+                <Input
+                  id="username"
+                  className="col-span-3"
+                  {...register("pixKey")}
+                />
+                {errors.pixKey && <span>{errors.pixKey.message}</span>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Telefone
+                </Label>
+                <Input
+                  id="username"
+                  className="col-span-3"
+                  {...register("phone")}
+                />
+                {errors.phone && <span>{errors.phone.message}</span>}
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="username" className="text-right">
+                  Regra
+                </Label>
+                <Input
+                  id="username"
+                  className="col-span-3"
+                  {...register("rule")}
+                />
+                {errors.rule && <span>{errors.rule.message}</span>}
               </div>
             </div>
+            <DialogFooter>
+              <Button type="submit">Salvar</Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </main>

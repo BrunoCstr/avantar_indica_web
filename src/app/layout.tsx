@@ -12,6 +12,11 @@ const familjen = Familjen_Grotesk({
 export const metadata: Metadata = {
   title: "Avantar Indica | ADM",
   description: "Painel administrativo Avantar Indica",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({

@@ -49,14 +49,19 @@ const items = [
   },
   {
     title: "Indicações",
-    url: "/indications",
+    url: "/ongoing-indications",
     icon: FaShare,
   },
 ];
 
-const subItems = [
+const subItemsSolicitations = [
   { tittle: "Afiliação", url: "/membership-requests" },
   { tittle: "Saque", url: "/withdraw-requests" },
+];
+
+const subItemsIndications = [
+  { tittle: "Recebidas", url: "/ongoing-indications" },
+  { tittle: "Fechadas", url: "/converted-indications" },
 ];
 
 export function AppSidebar() {
@@ -68,10 +73,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar
-      className="border-none"
-      style={{ "--sidebar": "#170138" } as React.CSSProperties}
+      className="border-none shadow-[0px_8px_20px_rgba(255,255,255,0.3)]"
+      // style={{ "--sidebar": "#170138" } as React.CSSProperties}
     >
-      <SidebarContent className="bg-[#fff] text-black rounded-tr-3xl">
+      <SidebarContent className="bg-[#fff] text-black">
         <SidebarHeader>
           <div className="flex flex-row items-center gap-3 mt-5 ml-1">
             <Image
@@ -115,7 +120,7 @@ export function AppSidebar() {
 
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {subItems.map((item) => (
+                      {subItemsSolicitations.map((item) => (
                         <SidebarMenuSubItem
                           key={item.tittle}
                           className="cursor-pointer"
