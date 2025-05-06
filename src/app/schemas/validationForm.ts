@@ -33,5 +33,6 @@ export const editIndicationSchema = z.object({
   product: z.string().min(3, "O produto deve ter pelo menos 3 caracteres!"),
   phone: z.string().min(10, "O telefone deve ter pelo menos 10 caracteres!"),
   status: z.string().min(5, "O status deve ter pelo menos 5 caracteres!"),
+  sgcorID: z.string().min(5, "O ID de produção deve ter pelo menos 5 caracteres!").optional(),
 })
 export type EditIndicationFormData = z.infer<typeof editIndicationSchema>;

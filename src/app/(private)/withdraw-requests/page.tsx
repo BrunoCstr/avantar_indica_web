@@ -337,7 +337,6 @@ export default function WithdrawRequest() {
                         <th className="px-4 py-2 text-left">Produto</th>
                         <th className="px-4 py-2 text-left">Telefone</th>
                         <th className="px-4 py-2">Status</th>
-                        <th className="px-4 py-2">ID (SGCOR)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -368,9 +367,6 @@ export default function WithdrawRequest() {
                             } space-x-2 text-center`}
                           >
                             {item.status}
-                          </td>
-                          <td className="px-4 py-2 space-x-2 text-center">
-                            {item.idProducao || "Não possui"}
                           </td>
                         </tr>
                       ))}

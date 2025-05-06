@@ -33,7 +33,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { useAuth } from "@/context/Auth";
-import {SidebarSkeleton} from "@/components/skeletons/SidebarSkeleton"
+import { SidebarSkeleton } from "@/components/skeletons/SidebarSkeleton";
 
 // Menu items.
 const items = [
@@ -46,11 +46,6 @@ const items = [
     title: "Parceiros",
     url: "/partners",
     icon: FaPeopleArrows,
-  },
-  {
-    title: "Indicações",
-    url: "/ongoing-indications",
-    icon: FaShare,
   },
 ];
 
@@ -68,7 +63,7 @@ export function AppSidebar() {
   const { userData, signOut, isLoading } = useAuth();
 
   if (isLoading) {
-    return <SidebarSkeleton/>
+    return <SidebarSkeleton />;
   }
 
   return (
@@ -108,6 +103,32 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
+              <Collapsible defaultOpen className="group/collapsible">
+                <SidebarMenuItem className="pt-1">
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton className="cursor-pointer transition-colors duration-700 ease-in-out text-[1rem]">
+                      <FaShare />
+                      <span>Indicações</span>
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      {subItemsIndications.map((item) => (
+                        <SidebarMenuSubItem
+                          key={item.tittle}
+                          className="cursor-pointer"
+                        >
+                          <a href={item.url}>
+                            <span>{item.tittle}</span>
+                          </a>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
 
               <Collapsible defaultOpen className="group/collapsible">
                 <SidebarMenuItem className="pt-1">

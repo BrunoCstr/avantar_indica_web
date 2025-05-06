@@ -29,6 +29,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
+import { Alert } from "react-native";
+import { AlertModal } from "@/components/myComponents/AlertModal";
+
+type ProductionProps = {
+  propostaId: number;
+  dataVigenciaInicial: string;
+  dataVigenciaFinal: string;
+  tipoLabel: string;
+  statusLabel: string;
+  ramo: string;
+  valorPremio: number;
+  valorComissao: number;
+  companhia: string;
+  nome_produtor: string;
+};
 
 interface IndicationsListProps {
   createdAt: string;
@@ -40,6 +55,8 @@ interface IndicationsListProps {
   indicationID: string;
   status: string;
   unitId: string;
+  sgcorID?: string;
+  productionData: ProductionProps;
 }
 
 const indicationsList: IndicationsListProps[] = [
@@ -51,52 +68,90 @@ const indicationsList: IndicationsListProps[] = [
     phone: "33999442685",
     product: "AUTO",
     indicationID: "2CDJkbOYzHAIcWYfeXbJ",
-    status: "PENDENTE CONTATO",
+    status: "FECHADO",
     unitId: "CoSpfYYyGeZITlPzEhfg",
-  },
-  {
-    createdAt: "18/04/2025",
-    indicator_name: "Maria da Silva",
-    name: "João Pedro Carvalho",
-    observations: "Interessado em seguro residencial.",
-    phone: "21987654321",
-    product: "RESIDENCIAL",
-    indicationID: "9AHJdlKUzXABpLWffEjW",
-    status: "CONTATO REALIZADO",
-    unitId: "CoSpfYYyGeZITlPzEhfg",
+    sgcorID: "35636",
+    productionData: {
+      propostaId: 35636,
+      dataVigenciaInicial: "2025-04-16",
+      dataVigenciaFinal: "2026-04-16",
+      tipoLabel: "Nova",
+      statusLabel: "Renovada",
+      ramo: "AUTO",
+      valorPremio: 1500.0,
+      valorComissao: 150.0,
+      companhia: "ALLIANZ",
+      nome_produtor: "ALEXSANDRO SILVEIRA DE ANDRADE",
+    },
   },
   {
     createdAt: "20/04/2025",
-    indicator_name: "Lucas Andrade",
-    name: "Fernanda Oliveira Ramos",
-    observations: "Cliente já possui apólice vencida.",
-    phone: "31988441234",
+    indicator_name: "Maria Fernanda",
+    name: "Lucas da Silva Pereira",
+    observations: "Cliente indicado via WhatsApp",
+    phone: "21988887777",
     product: "VIDA",
-    indicationID: "4LKJzvJTyQPnbOEksWmP",
-    status: "PENDENTE CONTATO",
+    indicationID: "8DHJkqPZtWIoMYbgfKcH",
+    status: "FECHADO",
     unitId: "CoSpfYYyGeZITlPzEhfg",
+    productionData: {
+      propostaId: 36219,
+      dataVigenciaInicial: "2025-04-20",
+      dataVigenciaFinal: "2026-04-20",
+      tipoLabel: "Nova",
+      statusLabel: "Vigente",
+      ramo: "VIDA",
+      valorPremio: 850.0,
+      valorComissao: 85.0,
+      companhia: "BRADESCO",
+      nome_produtor: "CARLA MONTEIRO SANTOS",
+    },
   },
   {
-    createdAt: "22/04/2025",
-    indicator_name: "Juliana Moreira",
-    name: "Carlos Eduardo Fernandes",
-    observations: "Quer cotação para dois veículos.",
-    phone: "11997443322",
-    product: "AUTO",
-    indicationID: "7DKFzqOXbRMIgTJhvVnL",
-    status: "PROPOSTA ENVIADA",
+    createdAt: "25/04/2025",
+    indicator_name: "João Pedro Lima",
+    name: "Ana Beatriz Moreira",
+    observations: "Contato feito por e-mail, aguarda proposta",
+    phone: "11997776666",
+    product: "RESIDENCIAL",
+    indicationID: "5QFPlnGYhWRoTZfduRjD",
+    status: "FECHADO",
     unitId: "CoSpfYYyGeZITlPzEhfg",
+    productionData: {
+      propostaId: 36542,
+      dataVigenciaInicial: "2025-04-25",
+      dataVigenciaFinal: "2026-04-25",
+      tipoLabel: "Nova",
+      statusLabel: "Vigente",
+      ramo: "RESIDENCIAL",
+      valorPremio: 1200.0,
+      valorComissao: 120.0,
+      companhia: "PORTO SEGURO",
+      nome_produtor: "RODRIGO ALMEIDA COSTA",
+    },
   },
   {
-    createdAt: "24/04/2025",
-    indicator_name: "Pedro Henrique",
-    name: "Amanda Costa Lima",
-    observations: "Cliente indicada por irmã.",
-    phone: "21991234567",
-    product: "SAÚDE",
-    indicationID: "8GLKxqMNvSTUgPWhcCkB",
-    status: "AGUARDANDO DOCUMENTOS",
+    createdAt: "30/04/2025",
+    indicator_name: "Fernanda Coutinho",
+    name: "Carlos Eduardo Ramos",
+    observations: "Cliente com urgência, retorno em aberto",
+    phone: "31999998888",
+    product: "EMPRESARIAL",
+    indicationID: "9ZGKsPLXrUIfqCJsdMxZ",
+    status: "FECHADO",
     unitId: "CoSpfYYyGeZITlPzEhfg",
+    productionData: {
+      propostaId: 36781,
+      dataVigenciaInicial: "2025-04-30",
+      dataVigenciaFinal: "2026-04-30",
+      tipoLabel: "Nova",
+      statusLabel: "Vigente",
+      ramo: "EMPRESARIAL",
+      valorPremio: 5000.0,
+      valorComissao: 500.0,
+      companhia: "MAPFRE",
+      nome_produtor: "LUCIANA PIRES REZENDE",
+    },
   },
 ];
 
@@ -125,6 +180,10 @@ export default function OngoingIndications() {
     id: number;
     action: ActionType;
   } | null>(null);
+  const [isModalProductionOpen, setIsModalProductionOpen] = useState(false);
+  const [productionForIndicationSelected, setProductionForIndicationSelected] =
+    useState<IndicationsListProps | null>(null);
+    const [AlertModalOpen, setAlertModalOpen] = useState(false)
 
   const {
     register,
@@ -174,7 +233,19 @@ export default function OngoingIndications() {
     setValue("product", indicationSelected.product);
     setValue("phone", indicationSelected.phone);
     setValue("status", indicationSelected.status);
+    setValue("sgcorID", indicationSelected.sgcorID ?? "");
   }
+
+  const openProductionInfo = (productionSelected: string) => {
+    setIsModalProductionOpen(true);
+
+    const ProductionSelectedParseToNumber = parseInt(productionSelected);
+    setProductionForIndicationSelected(
+      indicationsList.find(
+        (indications) => indications.productionData.propostaId === ProductionSelectedParseToNumber
+      ) ?? null
+    );
+  };
 
   return (
     <div className="flex h-full w-full overflow-x-auto bg-fifth-purple">
@@ -185,9 +256,7 @@ export default function OngoingIndications() {
           <>
             <Card className="h-[92%] overflow-x-auto no-scrollbar">
               <div className="px-4 -mt-2">
-                <h2 className="text-xl font-semibold mb-2">
-                  Recebidas
-                </h2>
+                <h2 className="text-xl font-semibold mb-2">Fechadas</h2>
                 <div className="overflow-x-auto rounded-2xl">
                   <table className="min-w-full table-fixed">
                     <thead>
@@ -198,7 +267,8 @@ export default function OngoingIndications() {
                         <th className="px-4 py-2 text-left">Produto</th>
                         <th className="px-4 py-2 text-left">Telefone</th>
                         <th className="px-4 py-2 text-left">Status</th>
-                        <th className="px-4 py-2">Data</th>
+                        <th className="px-4 py-2">Produção</th>
+                        <th className="px-4 py-2">Final de Vigência</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -249,7 +319,24 @@ export default function OngoingIndications() {
                             {item.status}
                           </td>
                           <td className="px-4 py-2 space-x-2 text-center">
-                            {item.createdAt}
+                            <Button
+                              className="cursor-pointer bg-primary-purple hover:bg-purple-500 transition-all duration-700"
+                              type="submit"
+                              onClick={() => {
+                                if(item.sgcorID && item.sgcorID.length > 0) {
+                                  openProductionInfo(item.sgcorID)
+                                  console.log('caiu no if')
+                                } else {
+                                  setAlertModalOpen(true);
+                                  console.log('caiu no else')
+                                }
+                              }}
+                            >
+                              Ver
+                            </Button>
+                          </td>
+                          <td className="px-4 py-2 space-x-2 text-center">
+                            {item.productionData.dataVigenciaFinal}
                           </td>
                         </tr>
                       ))}
@@ -299,7 +386,7 @@ export default function OngoingIndications() {
               </DialogContent>
             </Dialog>
 
-            {/* Modal de Indicações da pessoa selecionada */}
+            {/* Modal de Editar indicações da pessoa selecionada */}
             <Dialog
               open={isModalIndicationsOpen}
               onOpenChange={(open) => {
@@ -370,6 +457,18 @@ export default function OngoingIndications() {
                     />
                     {errors.status && <span>{errors.status.message}</span>}
                   </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="sgcorID" className="text-right">
+                      SGCOR (ID)
+                    </Label>
+                    <Input
+                      id="sgcorID"
+                      className="col-span-3"
+                      {...register("sgcorID")}
+                    />
+                    {errors.sgcorID && <span>{errors.sgcorID.message}</span>}
+                  </div>
                 </div>
                 <DialogFooter>
                   <Button className="cursor-pointer" type="submit">
@@ -378,13 +477,46 @@ export default function OngoingIndications() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+
+
+            {/* Modal da produção vinculada à indicação */}
+              <Dialog
+                open={isModalProductionOpen}
+                onOpenChange={(open) => {
+                  setIsModalProductionOpen(open);
+                  if (!open) {
+                    setProductionForIndicationSelected(null);
+                  }
+                }}
+              >
+                <DialogContent
+                  className="w-[65%] h-[75%] flex flex-col border-2 border-blue"
+                  style={{ maxWidth: "none" } as React.CSSProperties}
+                >
+                  <DialogHeader>
+                    <DialogTitle>
+                      Produção ID: {productionForIndicationSelected?.productionData.propostaId}
+                    </DialogTitle>
+                  </DialogHeader>
+
+                  <div className="overflow-x-auto rounded-2xl flex flex-col">
+                    Produtor: {productionForIndicationSelected?.productionData.nome_produtor}
+                    Seguradora: {productionForIndicationSelected?.productionData.companhia}
+                    Produtor: {productionForIndicationSelected?.productionData.nome_produtor}
+                    Produtor: {productionForIndicationSelected?.productionData.nome_produtor}
+                  </div>
+                </DialogContent>
+              </Dialog>
+  
+              <AlertModal open={AlertModalOpen} setOpen={setAlertModalOpen} title="Produção não vinculada!" description="Você precisa vincular a produção do SGCOR à essa
+            indicação para visualizar as informações."/>
           </>
         ) : (
           <Card className="h-[92%] overflow-x-auto no-scrollbar flex justify-center items-center">
             <div className="px-4 -mt-2 ">
               <div className="overflow-x-auto">
                 <span className="font-medium">
-                  Ainda não há solicitações de saque para sua unidade!
+                  Ainda não há indicações fechadas de sua unidade!
                 </span>
               </div>
             </div>

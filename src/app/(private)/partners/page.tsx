@@ -13,10 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MdEdit } from "react-icons/md";
 import { EditUserFormData, editUserSchema } from "@/app/schemas/validationForm";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PartnersProps {
   email: string;
@@ -130,6 +131,11 @@ const affiliationRequests: PartnersProps[] = [
   },
 ];
 
+const rules = [
+  "Cliente Indicador",
+  "Parceiro Indicador",
+]
+
 type ActionType = "approve" | "reject";
 
 export default function Partners() {
@@ -211,6 +217,7 @@ export default function Partners() {
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
   } = useForm<EditUserFormData>({
     resolver: zodResolver(editUserSchema),
@@ -365,30 +372,6 @@ export default function Partners() {
           </div>
         </Card>
 
-        {/* Modal de Observações
-          <Dialog
-            open={isModalEditOpen}
-            onOpenChange={(open) => {
-              setIsModalEditOpen(open);
-              if (!open) {
-                setPartnerSelected(null);
-              }
-            }}
-          >
-            <DialogContent
-              className="w-[40%] h-[50%] flex flex-col border-2 border-blue"
-              style={{ maxWidth: "none" } as React.CSSProperties}
-            >
-              <DialogHeader>
-                <DialogTitle></DialogTitle>
-              </DialogHeader>
-
-              <div className="overflow-x-auto">
-                <h1 className="font-bold">Editar usuário</h1>
-              </div>
-            </DialogContent>
-          </Dialog> */}
-
         <Dialog
           open={isModalEditOpen}
           onOpenChange={(open) => {
@@ -415,46 +398,66 @@ export default function Partners() {
                 {errors.name && <span>{errors.name.message}</span>}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="email" className="text-right">
                   E-mail
                 </Label>
                 <Input
-                  id="username"
+                  id="email"
                   className="col-span-3"
                   {...register("email")}
                 />
                 {errors.email && <span>{errors.email.message}</span>}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="pixkey" className="text-right">
                   Chave Pix
                 </Label>
                 <Input
-                  id="username"
+                  id="pixkey"
                   className="col-span-3"
                   {...register("pixKey")}
                 />
                 {errors.pixKey && <span>{errors.pixKey.message}</span>}
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
+                <Label htmlFor="phone" className="text-right">
                   Telefone
                 </Label>
                 <Input
-                  id="username"
+                  id="phone"
                   className="col-span-3"
                   {...register("phone")}
                 />
                 {errors.phone && <span>{errors.phone.message}</span>}
               </div>
+
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Regra
+                <Label htmlFor="status" className="text-right">
+                  Status
                 </Label>
-                <Input
-                  id="username"
-                  className="col-span-3"
-                  {...register("rule")}
+                <Controller
+                  name="rule"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                      }}
+                      value={field.value}
+                    >
+                      <SelectTrigger className="w-full col-span-3">
+                        <SelectValue placeholder="Selecione um Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {rules.map((rule) => (
+                          <SelectItem key={rule} value={rule}>
+                            {rule}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                  rules={{ required: "Selecione uma regra!" }}
                 />
                 {errors.rule && <span>{errors.rule.message}</span>}
               </div>
