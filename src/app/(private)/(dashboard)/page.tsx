@@ -4,7 +4,6 @@ import React from "react";
 
 import { useAuth } from "@/context/Auth";
 import { Card } from "@/components/myComponents/dashboard/Card";
-import { cardsContent } from "@/data/cardsDashoard";
 import { List } from "@/components/myComponents/dashboard/List";
 import { listBiggestIndicators } from "@/data/listBiggestIndicators";
 import { BarChartAvtr } from "@/components/myComponents/dashboard/BarChart";
@@ -14,7 +13,7 @@ export default function Dashboard() {
   const { isLoading } = useAuth();
 
   if (isLoading) {
-    return <DashboardSkeleton/>
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -23,24 +22,15 @@ export default function Dashboard() {
         <p className="text-2xl text-[#fff]">Dashboard</p>
         <div className="h-[90%] mt-8 ">
           <div className="w-full flex flex-row gap-2">
-            {cardsContent.map((card) => (
-              <Card
-                value={card.value}
-                icon={card.icon}
-                label={card.label}
-                growth={card.growth}
-                isCash={card.isCash}
-              />
-            ))}
+            <Card />
           </div>
-
           <div className="mt-2">
-            <List items={listBiggestIndicators}/>
+            <List items={listBiggestIndicators} />
           </div>
 
           <div className="mt-2 flex gap-4 justify-center">
-            <BarChartAvtr/>
-            <BarChartAvtr/>
+            <BarChartAvtr />
+            <BarChartAvtr />
           </div>
         </div>
       </div>

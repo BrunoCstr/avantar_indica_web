@@ -29,7 +29,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
-import { Alert } from "react-native";
 import { AlertModal } from "@/components/myComponents/AlertModal";
 
 type ProductionProps = {

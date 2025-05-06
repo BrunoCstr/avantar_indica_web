@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 interface IndicationsListProps {
   createdAt: string;
@@ -115,6 +116,14 @@ const indicationStatus = [
 type ActionType = "approve" | "reject";
 
 export default function OngoingIndications() {
+  const {
+    indicationsOfMonth,
+    totalLeadsConverted,
+    totalCommissionGenerated,
+    leadsAwaitingContact,
+    withdrawalsMade,
+  } = useDashboardData();
+
   const [indications, setIndications] = useState(indicationsList);
   const [isModalDialogOpen, setIsModalDialogOpen] = useState(false);
   const [isModalIndicationsOpen, setIsModalIndicationsOpen] = useState(false);
@@ -185,9 +194,7 @@ export default function OngoingIndications() {
           <>
             <Card className="h-[92%] overflow-x-auto no-scrollbar">
               <div className="px-4 -mt-2">
-                <h2 className="text-xl font-semibold mb-2">
-                  Recebidas
-                </h2>
+                <h2 className="text-xl font-semibold mb-2">Recebidas</h2>
                 <div className="overflow-x-auto rounded-2xl">
                   <table className="min-w-full table-fixed">
                     <thead>
